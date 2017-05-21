@@ -53,10 +53,6 @@
       <HintPath>..\HangfireTaskDispatcher\packages\Hangfire.Core.1.6.12\lib\net45\Hangfire.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="Hangfire.Extension.TaskDispatcher, Version=0.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\HangfireTaskDispatcher\packages\hangfire.extention.taskdispatcher.0.1.0\lib\net452\Hangfire.Extension.TaskDispatcher.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="Hangfire.Ninject, Version=1.2.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\HangfireTaskDispatcher\packages\Hangfire.Ninject.1.2.0\lib\net45\Hangfire.Ninject.dll</HintPath>
       <Private>True</Private>
@@ -265,6 +261,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HangfireTaskDispatcher\HangfireTaskDispatcher.csproj">
+      <Project>{43d6e0a3-b847-4d05-b207-aa18c38700b0}</Project>
+      <Name>HangfireTaskDispatcher</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

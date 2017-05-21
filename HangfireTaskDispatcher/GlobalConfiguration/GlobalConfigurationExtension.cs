@@ -35,9 +35,9 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
                 var taskType = task.GetType();
                 var displayName = taskType.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? task.ToString();
                 TaskDetailsRoutes.AddCommands(task, taskType.Name);
-                if (!TasksMenu.Items.ContainsKey(task.Queue)) TasksMenu.Items.Add(task.Queue, new List<Func<RazorPage, MenuItem>>());
+                if (!TasksMenu.Items.ContainsKey(task.Queue)) TasksMenu.Items.Add(task.Queue, new SortedList<string, Func<RazorPage, MenuItem>>());
                 var menuItems = TasksMenu.Items[task.Queue];
-                menuItems.Add(p => new MenuItem(displayName, p.Url.To($"{TasksPage.UrlRoute}/{taskType.Name}"))
+                menuItems.Add(displayName,p => new MenuItem(displayName, p.Url.To($"{TasksPage.UrlRoute}/{taskType.Name}"))
                 {
                     Active = p.RequestPath.StartsWith($"{TasksPage.UrlRoute}/{taskType.Name}")
                 });

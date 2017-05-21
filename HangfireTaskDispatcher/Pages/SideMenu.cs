@@ -10,9 +10,9 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
         public const string Title = "Tasks";
         public const string UrlRoute = "/Task";
 
-        public Dictionary<string, List<Func<RazorPage, MenuItem>>> Items { get; }
+        public IDictionary<string, SortedList<string, Func<RazorPage, MenuItem>>> Items { get; }
 
-        public SideMenu(Dictionary<string, List<Func<RazorPage, MenuItem>>> items)
+        public SideMenu(IDictionary<string, SortedList<string, Func<RazorPage, MenuItem>>> items)
         {
             if (items == null) throw new ArgumentNullException(nameof(items));
             Items = items;
@@ -32,7 +32,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                                     <div id=""{queue.Key}"" class=""sublinks collapse"">");
                 foreach (var item in queue.Value)
                 {
-                    var itemValue = item(this);
+                    var itemValue = item.Value(this);
                     var activeString = itemValue.Active ? "active" : "list-group-item-info";
                     WriteLiteral($@"     
                         <a class=""list-group-item small {activeString}"" 
