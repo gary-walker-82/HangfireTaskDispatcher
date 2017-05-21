@@ -1,4 +1,5 @@
 using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace Hangfire.Extension.TaskDispatcher.Extensions
@@ -9,6 +10,5 @@ namespace Hangfire.Extension.TaskDispatcher.Extensions
         {
             return type.GetCustomAttributes(typeof(TAttribute), true).Cast<TAttribute>().FirstOrDefault();
         }
-
     }
 }

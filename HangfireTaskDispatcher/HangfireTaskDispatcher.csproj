@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Attributes\UseQueueFromTaskParametersAttribute.cs" />
     <Compile Include="Converters\BoolInputElement.cs" />
+    <Compile Include="Converters\EnumInputElement.cs" />
     <Compile Include="Extensions\TypeExtensionMethods.cs" />
     <Compile Include="GlobalConfiguration\GlobalConfigurationExtension.cs" />
     <Compile Include="Helpers\EmbeddedResourceDispatcher.cs" />

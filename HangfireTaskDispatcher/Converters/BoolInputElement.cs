@@ -1,4 +1,7 @@
-﻿using Hangfire.Extension.TaskDispatcher.Interfaces;
+﻿using System.Collections.Generic;
+using System.Linq;
+using Hangfire.Extension.TaskDispatcher.Interfaces;
+using Microsoft.Ajax.Utilities;
 
 namespace Hangfire.Extension.TaskDispatcher.Converters
 {
