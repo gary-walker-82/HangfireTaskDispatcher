@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using Hangfire.Extension.TaskDispatcher.Interfaces;
-using Microsoft.Ajax.Utilities;
+﻿using Hangfire.Extension.TaskDispatcher.Interfaces;
 
 namespace Hangfire.Extension.TaskDispatcher.Converters
 {
@@ -11,9 +8,9 @@ namespace Hangfire.Extension.TaskDispatcher.Converters
         {
             return $@"<div class=""btn-group"" id=""status"" data-toggle=""buttons"">
                     <label class=""btn btn-default btn-on btn-sm active"">
-                  <input type =""radio"" value=""1"" name=""{Id}"" checked=""checked"">YES</label>
+                  <input type =""radio"" value=""true"" name=""{Id}"" checked=""checked"">YES</label>
                   <label class=""btn btn-default btn-off btn-sm "">
-                  <input type =""radio"" value=""0"" name=""{Id}"">NO</label>
+                  <input type =""radio"" value=""false"" name=""{Id}"">NO</label>
                 </div>";
         }
     }

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Hangfire.Extension.TaskDispatcher.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Hangfire.Extension.TaskDispatcher.Interfaces;
 
 namespace Hangfire.Extension.TaskDispatcher.Converters
 {
@@ -20,12 +20,12 @@ namespace Hangfire.Extension.TaskDispatcher.Converters
         public IInputElement GetInputElementWriter(PropertyInfo propertyInfo)
         {
             var type = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ??
-                               propertyInfo.PropertyType; 
-            if (!_inputElements.ContainsKey(type) && type.IsEnum ==false) throw new Exception("no matching type");
+                               propertyInfo.PropertyType;
+            IInputElement input;
 
-            var input = type.IsEnum
-                ? _inputElements[typeof(Enum)]
-                : _inputElements[type];
+            if (type.IsEnum) input = _inputElements[typeof(Enum)];
+            else if (!_inputElements.ContainsKey(type)) input = _inputElements[typeof(string)];
+            else input = _inputElements[type];
 
             input.Property = propertyInfo;
             return input;

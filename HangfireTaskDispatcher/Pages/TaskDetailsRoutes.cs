@@ -1,13 +1,12 @@
-﻿using System;
+﻿using Hangfire.Common;
+using Hangfire.Dashboard;
+using Hangfire.Extension.TaskDispatcher.Interfaces;
+using Hangfire.States;
+using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using Hangfire.Common;
-using Hangfire.Dashboard;
-using Hangfire.Extension.TaskDispatcher.Interfaces;
-using Hangfire.States;
-using WebGrease.Css.Extensions;
 
 namespace Hangfire.Extension.TaskDispatcher.Pages
 {
@@ -15,10 +14,10 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
     {
         public static void PopulateFromRequest(this ITaskParameters task, DashboardRequest request)
         {
-            task.GetType()
-                .GetProperties()
-                .Where(x => x.CanWrite)
-                .ForEach(x => SetProperty(request, x, task));
+            foreach (var property in task.GetType().GetProperties().Where(x => x.CanWrite))
+            {
+                SetProperty(request, property, task);
+            }
         }
 
         private static void SetProperty(DashboardRequest request, PropertyInfo propertyInfo, ITaskParameters searchObject)
@@ -45,9 +44,9 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
 
     public static class TaskDetailsRoutes
     {
-        public static void AddCommands<T>(T task, string pageHeader) where T:ITaskParameters
+        public static void AddCommands<T>(T task, string pageHeader) where T : ITaskParameters
         {
-            var queue =task.Queue;
+            var queue = task.Queue;
             var route = $"{TasksPage.UrlRoute}/{queue}/{pageHeader.Replace(" ", string.Empty)}";
             DashboardRoutes.Routes.AddCommand(route, context =>
             {
@@ -63,7 +62,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                 var job = new Job(typeof(ITaskDispatcher), makeGenericMethod, task);
                 var client = new BackgroundJobClient(context.Storage);
 
-                switch(action)
+                switch (action)
                 {
                     case "schedule":
                         var minutes = int.Parse(schedule);
@@ -86,5 +85,5 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
         }
 
     }
-    
+
 }
