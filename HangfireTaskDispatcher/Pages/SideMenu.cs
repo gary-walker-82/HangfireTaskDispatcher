@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Hangfire.Dashboard;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Hangfire.Dashboard;
 
 namespace Hangfire.Extension.TaskDispatcher.Pages
 {
@@ -28,7 +28,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                                 <div id=""stats"" class=""panel list-group"">");
             foreach (var queue in Items)
             {
-                WriteLiteral($@"<a class=""list-group-item"" data-toggle=""collapse"" data-target=""#{queue.Key}"" data-parent=""#menu""><b>{queue.Key}</b></a>
+                WriteLiteral($@"<a class=""list-group-item"" data-toggle=""collapse"" data-target=""#{queue.Key}"" data-parent=""#menu""><b>{queue.Key.Replace("_", " ")}</b></a>
                                     <div id=""{queue.Key}"" class=""sublinks collapse"">");
                 foreach (var item in queue.Value)
                 {

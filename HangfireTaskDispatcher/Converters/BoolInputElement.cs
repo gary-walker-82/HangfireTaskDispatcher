@@ -8,7 +8,7 @@ namespace Hangfire.Extension.TaskDispatcher.Converters
         {
             return $@"<div class=""btn-group"" id=""status"" data-toggle=""buttons"">
                     <label class=""btn btn-default btn-on btn-sm active"">
-                  <input type =""radio"" value=""true"" name=""{Id}"" checked=""checked"">YES</label>
+                  <input type =""radio"" value=""true"" name=""{Id}"">YES</label>
                   <label class=""btn btn-default btn-off btn-sm "">
                   <input type =""radio"" value=""false"" name=""{Id}"">NO</label>
                 </div>";

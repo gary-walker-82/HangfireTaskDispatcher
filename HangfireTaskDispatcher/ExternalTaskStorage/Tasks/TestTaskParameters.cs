@@ -3,7 +3,7 @@ using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
 
-namespace TestSite.Tasks
+namespace ExternalTaskStorage.Tasks
 {
     public abstract class BaseTaskParameters : ITaskParameters
     {

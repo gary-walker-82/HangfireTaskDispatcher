@@ -1,11 +1,10 @@
-﻿using System;
-using System.Reflection;
+﻿using ExternalTaskStorage.Tasks;
 using Hangfire;
 using Hangfire.Console;
 using Hangfire.Extension.TaskDispatcher.GlobalConfiguration;
 using Ninject;
 using Owin;
-using TestSite.Tasks;
+using System.Reflection;
 
 namespace TestSite
 {
@@ -25,6 +24,6 @@ namespace TestSite
             app.UseHangfireDashboard();
             app.UseHangfireServer();
 
-                  }
+        }
     }
 }
