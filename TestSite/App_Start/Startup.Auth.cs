@@ -5,6 +5,8 @@ using Hangfire.Console;
 using Hangfire.Extension.TaskDispatcher.GlobalConfiguration;
 using Ninject;
 using Owin;
+using TestSite.Tasks;
+
 namespace TestSite
 {
     public partial class Startup
@@ -18,7 +20,7 @@ namespace TestSite
                .UseSqlServerStorage("hangfire")
                .UseConsole()
                .UseNinjectActivator(kernel)
-               .UseTaskDispatcherPages(Assembly.GetAssembly(typeof(Startup)));
+               .UseTaskDispatcherPages(Assembly.GetAssembly(typeof(BaseTaskParameters)));
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();

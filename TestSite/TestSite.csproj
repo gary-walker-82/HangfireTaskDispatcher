@@ -98,6 +98,10 @@
       <HintPath>..\HangfireTaskDispatcher\packages\Ninject.3.2.2.0\lib\net45-full\Ninject.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Ninject.Extensions.Conventions, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
+      <HintPath>..\HangfireTaskDispatcher\packages\Ninject.Extensions.Conventions.3.2.0.0\lib\net45-full\Ninject.Extensions.Conventions.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Ninject.Web.Common, Version=3.2.0.0, Culture=neutral, PublicKeyToken=c7192dc5380945e7, processorArchitecture=MSIL">
       <HintPath>..\HangfireTaskDispatcher\packages\Ninject.Web.Common.3.2.0.0\lib\net45-full\Ninject.Web.Common.dll</HintPath>
       <Private>True</Private>
@@ -235,7 +239,6 @@
     <Compile Include="Infrastructure\TaskModule.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="Tasks\TestTaskParameters.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="favicon.ico" />
@@ -263,6 +266,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HangfireTaskDispatcher\ExternalTaskStorage\ExternalTaskStorage.csproj">
+      <Project>{29369f9c-df4c-4b22-bada-1cac43c3eb98}</Project>
+      <Name>ExternalTaskStorage</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HangfireTaskDispatcher\HangfireTaskDispatcher.csproj">
       <Project>{43d6e0a3-b847-4d05-b207-aa18c38700b0}</Project>
       <Name>HangfireTaskDispatcher</Name>
