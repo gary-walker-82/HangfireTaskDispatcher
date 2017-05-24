@@ -28,45 +28,67 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
 
         public static IGlobalConfiguration UseTaskDispatcherPages(this IGlobalConfiguration config, Assembly assembly)
         {
+            var handlers =
+                assembly.GetTypes()
+                    .Where(x => x.IsAssignableFrom(typeof(ITaskHandler)) && x.IsAbstract == false)
+                    .Select(Activator.CreateInstance)
+                    .Cast<ITaskHandler>();
+            return config.UseTaskDispatcherPages(handlers);
+        }
+
+        public static IGlobalConfiguration UseTaskDispatcherPages(this IGlobalConfiguration config,
+            IEnumerable<ITaskHandler> handlers)
+        {
             CreateTopNavMenuItem();
             CreateScriptRoute();
-            CreateWebViews(assembly);
+            CreateWebViews(handlers);
 
             return config;
         }
 
-        private static void CreateWebViews(Assembly assembly)
+        private static void CreateWebViews(IEnumerable<ITaskHandler> handlers)
         {
-            try
+            var enumerable =
+                handlers.Select(
+                    x =>
+                        x.GetType()
+                            .GetInterfaces()
+                            .FirstOrDefault(y => y.IsConstructedGenericType)
+                            .GetGenericArguments()
+                            .FirstOrDefault()).ToList()
+                            ;
+
+            foreach (var taskTypeGroup in enumerable.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.ToList()))
             {
-                var tasks = assembly.GetTypes()
-                    .Where(x => typeof(ITaskParameters).IsAssignableFrom(x) && x.IsAbstract == false)
-                    .Select(Activator.CreateInstance)
-                    .Cast<ITaskParameters>()
-                    .ToList();
 
-                foreach (var task in tasks)
+                var taskType = taskTypeGroup.Value.FirstOrDefault();
+                var task = Activator.CreateInstance(taskType) as ITaskParameters;
+                var displayName = taskType.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
+                                  task.ToString();
+                if (!TasksMenu.Items.ContainsKey(task.Queue))
+                    TasksMenu.Items.Add(task.Queue, new SortedList<string, Func<RazorPage, MenuItem>>());
+                var menuItems = TasksMenu.Items[task.Queue];
+                menuItems.Add(displayName,
+                    p => new MenuItem(displayName, p.Url.To($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}"))
+                    {
+                        Active = p.RequestPath.StartsWith($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}")
+                    });
+
+                if (taskTypeGroup.Value.Count() == 1)
                 {
-                    var taskType = task.GetType();
-                    var displayName = taskType.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
-                                      task.ToString();
                     TaskDetailsRoutes.AddCommands(task, taskType.Name);
-                    if (!TasksMenu.Items.ContainsKey(task.Queue))
-                        TasksMenu.Items.Add(task.Queue, new SortedList<string, Func<RazorPage, MenuItem>>());
-                    var menuItems = TasksMenu.Items[task.Queue];
-                    menuItems.Add(displayName,
-                        p => new MenuItem(displayName, p.Url.To($"{TasksPage.UrlRoute}/{taskType.Name}"))
-                        {
-                            Active = p.RequestPath.StartsWith($"{TasksPage.UrlRoute}/{taskType.Name}")
-                        });
 
-                    DashboardRoutes.Routes.AddRazorPage($"{TasksPage.UrlRoute}/{taskType.Name}",
+                    DashboardRoutes.Routes.AddRazorPage($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}",
                         x => new TaskDetailsPage(task));
                 }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                else
+                {
+                    var types = taskTypeGroup.Value.Select(x => x.GenericTypeArguments.FirstOrDefault());
+                    var unConstructedGenericType = taskType.Assembly.GetTypes().FirstOrDefault(x => x.Name == taskType.Name);
+                    TaskDetailsRoutes.AddCommands(unConstructedGenericType, types.ToList(), taskType.Name.Replace("`1", ""));
+                    DashboardRoutes.Routes.AddRazorPage($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}",
+                       x => new TaskDetailsPage(task, types.ToList()));
+                }
             }
         }
 

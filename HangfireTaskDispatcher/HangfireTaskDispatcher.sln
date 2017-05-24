@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HangfireTaskDispatcher", "H
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestSite", "..\TestSite\TestSite.csproj", "{5C538F8B-179D-418B-8C9F-50CB034AB94F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExternalTaskStorage", "ExternalTaskStorage\ExternalTaskStorage.csproj", "{29369F9C-DF4C-4B22-BADA-1CAC43C3EB98}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tasks", "Tasks\Tasks.csproj", "{99183443-02B1-4908-9C5E-34A0E4B8F602}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,10 +23,10 @@ Global
 		{5C538F8B-179D-418B-8C9F-50CB034AB94F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C538F8B-179D-418B-8C9F-50CB034AB94F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C538F8B-179D-418B-8C9F-50CB034AB94F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{29369F9C-DF4C-4B22-BADA-1CAC43C3EB98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{29369F9C-DF4C-4B22-BADA-1CAC43C3EB98}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{29369F9C-DF4C-4B22-BADA-1CAC43C3EB98}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{29369F9C-DF4C-4B22-BADA-1CAC43C3EB98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{99183443-02B1-4908-9C5E-34A0E4B8F602}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99183443-02B1-4908-9C5E-34A0E4B8F602}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99183443-02B1-4908-9C5E-34A0E4B8F602}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99183443-02B1-4908-9C5E-34A0E4B8F602}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

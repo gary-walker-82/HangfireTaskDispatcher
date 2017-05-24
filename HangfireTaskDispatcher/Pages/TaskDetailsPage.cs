@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using Hangfire.Dashboard;
@@ -9,18 +11,21 @@ using Hangfire.Extension.TaskDispatcher.Interfaces;
 
 namespace Hangfire.Extension.TaskDispatcher.Pages
 {
+
     public class TaskDetailsPage : RazorPage
     {
         private readonly string _pageHeader;
         private readonly string _displayName;
         private readonly string _displayDescription;
         private readonly ITaskParameters _taskParameters;
-        
-        protected internal TaskDetailsPage(ITaskParameters taskParameters)
+        private readonly List<Type> _genericTypeOptions;
+
+        protected internal TaskDetailsPage(ITaskParameters taskParameters,List<Type> genericTypeOptions=null)
         {
             _taskParameters = taskParameters;
+            _genericTypeOptions = genericTypeOptions;
             var type = _taskParameters.GetType();
-            _pageHeader = type.Name;
+            _pageHeader = type.Name.Replace("`1", "");
             _displayName = type.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??taskParameters.ToString();
             _displayDescription = type.GetCustomAttribute<DescriptionAttribute>()?.Description;
         }
@@ -55,12 +60,13 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
         {
             var id = $"{_pageHeader.Replace(" ", string.Empty)}";
             var inputElementFactory = new InputElementFactory();
-            var inputsHtml = _taskParameters.GetType()
+            var inputsHtml = AddGenericTypeOption();
+            inputsHtml += _taskParameters.GetType()
                                            .GetProperties()
                                            .Where(x => x.CanRead)
                                            .Select(x => inputElementFactory.GetInputElementWriter(x))
                                            .Aggregate(new StringBuilder(), (sb, x) => sb.AppendLine(x.WriteElementAndLabel(_taskParameters)), sb => sb.ToString());
-
+            
             var route = $"{TasksPage.UrlRoute}/{_taskParameters.Queue}/{_pageHeader.Replace(" ", string.Empty)}";
 
             Panel(id, _displayName, _displayDescription, inputsHtml, CreateButtons(route, "Enqueue", "enqueueing", id));
@@ -68,6 +74,24 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
             WriteLiteral("\r\n<script src=\"");
             Write(Url.To($"/jsm"));
             WriteLiteral("\"></script>\r\n");
+        }
+
+        private string AddGenericTypeOption()
+        {
+            if (_genericTypeOptions == null || _genericTypeOptions.Any() == false) return "";
+            var values = _genericTypeOptions.Select(x => x.Name);
+            var stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($@"<select class=""form-control"" id=""objecttype"" name=""objecttype"">");
+            foreach (var value in values)
+            {
+                stringBuilder.AppendLine($@"<option value=""{value}"">{value}</option>");
+            }
+            stringBuilder.AppendLine("</select>");
+          
+            var inputsHtml = $@"<div class=""form-group row"">
+                        <label for=""objecttype"" class=""col-xs-3 col-form-label"">Type</label>
+                        <div class=""col-xs-9"">{  stringBuilder}</div></div>";
+            return inputsHtml;
         }
 
         protected void Panel(string id, string heading, string description, string content, string buttons)

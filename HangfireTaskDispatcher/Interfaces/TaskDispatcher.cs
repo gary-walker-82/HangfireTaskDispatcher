@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Hangfire.Server;
+using System;
 using System.Collections.Generic;
 
 namespace Hangfire.Extension.TaskDispatcher.Interfaces
@@ -12,14 +13,16 @@ namespace Hangfire.Extension.TaskDispatcher.Interfaces
             _taskHandlers = taskHandlers;
         }
 
-        public void Dispatch<T>(T taskParameters) where T : ITaskParameters
+        public void Dispatch<T>(T taskParameters, PerformContext context, IJobCancellationToken cancellationToken) where T : ITaskParameters
         {
             if (taskParameters == null) throw new ArgumentNullException("taskParameters");
 
-            var handler = (ITaskHandler<T>) _taskHandlers.Find(e => e is ITaskHandler<T>);
+            var handler = (ITaskHandler<T>)_taskHandlers.Find(e => e is ITaskHandler<T>);
             if (handler == null) throw new Exception("not handler found for task");
 
             handler.Process(taskParameters);
         }
+
+
     }
 }

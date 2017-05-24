@@ -1,4 +1,4 @@
-﻿using ExternalTaskStorage.Tasks;
+using Benoy.Portal.Domain.APIs.Lucene.LuceneIndexUpdating;
 using Hangfire;
 using Hangfire.Console;
 using Hangfire.Extension.TaskDispatcher.GlobalConfiguration;
@@ -16,14 +16,13 @@ namespace TestSite
             var kernel = new StandardKernel();
             kernel.Load(Assembly.GetAssembly(typeof(Startup)));
             GlobalConfiguration.Configuration
-               .UseSqlServerStorage("hangfire")
+                .UseSqlServerStorage("hangfire")
                .UseConsole()
                .UseNinjectActivator(kernel)
-               .UseTaskDispatcherPages(Assembly.GetAssembly(typeof(BaseTaskParameters)));
+               .UseTaskDispatcherPages(Assembly.GetAssembly(typeof(UpdateFaqQuestionIndexTaskParameters)));
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();
-
         }
     }
 }
