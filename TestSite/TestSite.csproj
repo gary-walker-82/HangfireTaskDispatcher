@@ -271,7 +271,7 @@
       <Name>HangfireTaskDispatcher</Name>
     </ProjectReference>
     <ProjectReference Include="..\HangfireTaskDispatcher\Tasks\Tasks.csproj">
-      <Project>{99183443-02B1-4908-9C5E-34A0E4B8F602}</Project>
+      <Project>{99183443-02b1-4908-9c5e-34a0e4b8f602}</Project>
       <Name>Tasks</Name>
     </ProjectReference>
   </ItemGroup>

@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
-using Hangfire.Dashboard;
+﻿using Hangfire.Dashboard;
 using Hangfire.Extension.TaskDispatcher.Extensions;
 using Hangfire.Extension.TaskDispatcher.Helpers;
 using Hangfire.Extension.TaskDispatcher.Interfaces;
 using Hangfire.Extension.TaskDispatcher.Pages;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Linq;
+using System.Reflection;
 
 namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
 {
@@ -45,25 +45,22 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
                             .GetGenericArguments()
                             .FirstOrDefault()).ToList()
                             ;
-            var taskHandler = handlers.LastOrDefault();
-            var lastOrDefault = taskHandler.GetType().Assembly;
-            var firstOrDefault = lastOrDefault.GetTypes().FirstOrDefault(x => x.Name == taskHandler.GetType().Name);
-            
+
             foreach (var taskTypeGroup in enumerable.GroupBy(x => x.Name).ToDictionary(x => x.Key, x => x.ToList()))
             {
-                
-                    var taskType = taskTypeGroup.Value.FirstOrDefault();
-                    var task = Activator.CreateInstance(taskType) as ITaskParameters;
-                    var displayName = taskType.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
-                                      task.ToString();
-                    if (!TasksMenu.Items.ContainsKey(task.Queue))
-                        TasksMenu.Items.Add(task.Queue, new SortedList<string, Func<RazorPage, MenuItem>>());
-                    var menuItems = TasksMenu.Items[task.Queue];
-                    menuItems.Add(displayName,
-                        p => new MenuItem(displayName, p.Url.To($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}"))
-                        {
-                            Active = p.RequestPath.StartsWith($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}")
-                        });
+
+                var taskType = taskTypeGroup.Value.FirstOrDefault();
+                var task = Activator.CreateInstance(taskType) as ITaskParameters;
+                var displayName = taskType.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??
+                                  task.ToString();
+                if (!TasksMenu.Items.ContainsKey(task.Queue))
+                    TasksMenu.Items.Add(task.Queue, new SortedList<string, Func<RazorPage, MenuItem>>());
+                var menuItems = TasksMenu.Items[task.Queue];
+                menuItems.Add(displayName,
+                    p => new MenuItem(displayName, p.Url.To($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}"))
+                    {
+                        Active = p.RequestPath.StartsWith($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}")
+                    });
 
                 if (taskTypeGroup.Value.Count() == 1)
                 {
@@ -74,11 +71,11 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
                 }
                 else
                 {
-                    var typeses = taskTypeGroup.Value.Select(x=>x.GenericTypeArguments.FirstOrDefault());
-                    var unConstructedGenericType = taskType.Assembly.GetTypes().FirstOrDefault(x=>x.Name == taskType.Name);
-                    TaskDetailsRoutes.AddCommands(unConstructedGenericType, typeses.ToList(), taskType.Name.Replace("`1", ""));
-                    DashboardRoutes.Routes.AddRazorPage($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1","")}",
-                       x => new TaskDetailsPage(task, typeses.ToList() ));
+                    var types = taskTypeGroup.Value.Select(x => x.GenericTypeArguments.FirstOrDefault());
+                    var unConstructedGenericType = taskType.Assembly.GetTypes().FirstOrDefault(x => x.Name == taskType.Name);
+                    TaskDetailsRoutes.AddCommands(unConstructedGenericType, types.ToList(), taskType.Name.Replace("`1", ""));
+                    DashboardRoutes.Routes.AddRazorPage($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}",
+                       x => new TaskDetailsPage(task, types.ToList()));
 
 
                 }

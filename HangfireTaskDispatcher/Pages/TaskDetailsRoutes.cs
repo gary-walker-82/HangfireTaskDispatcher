@@ -4,45 +4,11 @@ using Hangfire.Extension.TaskDispatcher.Interfaces;
 using Hangfire.States;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Threading.Tasks;
 
 namespace Hangfire.Extension.TaskDispatcher.Pages
 {
-    public static class ITaskParameterExtentions
-    {
-        public static void PopulateFromRequest(this ITaskParameters task, DashboardRequest request)
-        {
-            foreach (var property in task.GetType().GetProperties().Where(x => x.CanWrite))
-            {
-                SetProperty(request, property, task);
-            }
-        }
-
-        private static void SetProperty(DashboardRequest request, PropertyInfo propertyInfo, ITaskParameters searchObject)
-        {
-            var value = Task.Run(() => request.GetFormValuesAsync(propertyInfo.Name)).Result.FirstOrDefault();
-
-            if (value == null) return;
-
-            var propertyType = Nullable.GetUnderlyingType(propertyInfo.PropertyType) ??
-                               propertyInfo.PropertyType;
-            var propertyValue = ConvertFromInvariantString(propertyType, value);
-
-            propertyInfo.SetValue(searchObject, propertyValue, null);
-        }
-
-        private static object ConvertFromInvariantString(Type newT, string item)
-        {
-            var converter = TypeDescriptor.GetConverter(newT);
-            return converter.IsValid(item)
-                ? converter.ConvertFromInvariantString(item)
-                : null;
-        }
-    }
-
     public static class TaskDetailsRoutes
     {
         public static void AddCommands<T>(T task, string pageHeader) where T : ITaskParameters
@@ -56,7 +22,6 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                 var action = Task.Run(() => context.Request.GetFormValuesAsync("action")).Result.FirstOrDefault();
 
                 task.PopulateFromRequest(context.Request);
-
 
                 var methodInfo = typeof(ITaskDispatcher).GetMethod("Dispatch");
                 var makeGenericMethod = methodInfo.MakeGenericMethod(task.GetType());
@@ -84,7 +49,8 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                 }
             });
         }
-        public static void AddCommands(Type unconstructedType,List<Type> genericTypeOptions, string pageHeader)
+
+        public static void AddCommands(Type unconstructedType, List<Type> genericTypeOptions, string pageHeader)
         {
             var makeGenericType = unconstructedType.MakeGenericType(genericTypeOptions.FirstOrDefault());
             var task = Activator.CreateInstance(makeGenericType) as ITaskParameters;
@@ -96,14 +62,14 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                 var cron = Task.Run(() => context.Request.GetFormValuesAsync("cron")).Result.FirstOrDefault();
                 var action = Task.Run(() => context.Request.GetFormValuesAsync("action")).Result.FirstOrDefault();
                 var typeName = Task.Run(() => context.Request.GetFormValuesAsync("objecttype")).Result.FirstOrDefault();
-                var firstOrDefault = genericTypeOptions.FirstOrDefault(x=>x.Name == typeName);
+                var genericTypeParameter = genericTypeOptions.FirstOrDefault(x => x.Name == typeName);
 
-                task = Activator.CreateInstance(unconstructedType.MakeGenericType(firstOrDefault)) as ITaskParameters;
+                task = Activator.CreateInstance(unconstructedType.MakeGenericType(genericTypeParameter)) as ITaskParameters;
                 task.PopulateFromRequest(context.Request);
-                
+
                 var methodInfo = typeof(ITaskDispatcher).GetMethod("Dispatch");
                 var makeGenericMethod = methodInfo.MakeGenericMethod(task.GetType());
-                var job = new Job(typeof(ITaskDispatcher), makeGenericMethod, task);
+                var job = new Job(typeof(ITaskDispatcher), makeGenericMethod, task, null, null);
                 var client = new BackgroundJobClient(context.Storage);
 
                 switch (action)
