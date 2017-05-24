@@ -266,13 +266,13 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\HangfireTaskDispatcher\ExternalTaskStorage\ExternalTaskStorage.csproj">
-      <Project>{29369f9c-df4c-4b22-bada-1cac43c3eb98}</Project>
-      <Name>ExternalTaskStorage</Name>
-    </ProjectReference>
     <ProjectReference Include="..\HangfireTaskDispatcher\HangfireTaskDispatcher.csproj">
       <Project>{43d6e0a3-b847-4d05-b207-aa18c38700b0}</Project>
       <Name>HangfireTaskDispatcher</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HangfireTaskDispatcher\Tasks\Tasks.csproj">
+      <Project>{99183443-02B1-4908-9C5E-34A0E4B8F602}</Project>
+      <Name>Tasks</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

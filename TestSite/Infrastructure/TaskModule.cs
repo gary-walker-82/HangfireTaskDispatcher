@@ -3,7 +3,7 @@ using Hangfire.Extension.TaskDispatcher.Interfaces;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using System.Reflection;
-using TestSite.Tasks;
+using Tasks;
 
 namespace TestSite.Infrastructure
 {
@@ -18,6 +18,9 @@ namespace TestSite.Infrastructure
                 .SelectAllClasses()
                 .InheritedFrom<ITaskHandler>()
                 .BindAllInterfaces());
+
+            Bind<ITaskHandler>().To<MyGenericTypeHandler<Type1>>();
+            Bind<ITaskHandler>().To<MyGenericTypeHandler<Type2>>();
         }
     }
 }

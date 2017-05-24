@@ -1,9 +1,9 @@
-﻿using Hangfire.Extension.TaskDispatcher.Interfaces;
-using System;
+﻿using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using Hangfire.Extension.TaskDispatcher.Interfaces;
 
-namespace TestSite.Tasks
+namespace Tasks
 {
     public abstract class BaseTaskParameters : ITaskParameters
     {
@@ -24,6 +24,7 @@ namespace TestSite.Tasks
         option1,
         option2
     }
+
     [DisplayName("Task Two")]
     [Description("This is a description")]
     public class T2TaskParameters : BaseTaskParameters
@@ -50,5 +51,53 @@ namespace TestSite.Tasks
     public class Test1TaskParameters : BaseTaskParameters
     {
         public int MyNumber { get; set; }
+    }
+
+    public class MyGenericType<T> : BaseTaskParameters
+    {
+        public string somedata { get; set; }
+    }
+
+
+    public class Type1
+    {
+    }
+
+    public class Type2
+    {
+    }
+
+
+    public class MyGenericTypeHandler<T> : ITaskHandler<MyGenericType<T>>
+    {
+        public void Process(MyGenericType<T> taskParameters)
+        {
+            var name = typeof(T).Name;
+            throw new NotImplementedException();
+        }
+    }
+
+    public class Test1TaskHandler : ITaskHandler<Test1TaskParameters>
+    {
+        public void Process(Test1TaskParameters taskParameters)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class T2TaskHandler : ITaskHandler<T2TaskParameters>
+    {
+        public void Process(T2TaskParameters taskParameters)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class TestTaskHandler : ITaskHandler<TestTaskParameters>
+    {
+        public void Process(TestTaskParameters taskParameters)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
