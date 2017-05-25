@@ -25,7 +25,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
 
                 var methodInfo = typeof(ITaskDispatcher).GetMethod("Dispatch");
                 var makeGenericMethod = methodInfo.MakeGenericMethod(task.GetType());
-                var job = new Job(typeof(ITaskDispatcher), makeGenericMethod, task);
+                var job = new Job(typeof(ITaskDispatcher), makeGenericMethod, task, null, null);
                 var client = new BackgroundJobClient(context.Storage);
 
                 switch (action)

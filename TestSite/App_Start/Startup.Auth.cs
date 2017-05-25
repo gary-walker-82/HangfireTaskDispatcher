@@ -1,10 +1,10 @@
-using Benoy.Portal.Domain.APIs.Lucene.LuceneIndexUpdating;
 using Hangfire;
 using Hangfire.Console;
 using Hangfire.Extension.TaskDispatcher.GlobalConfiguration;
 using Ninject;
 using Owin;
 using System.Reflection;
+using Tasks;
 
 namespace TestSite
 {
@@ -19,7 +19,7 @@ namespace TestSite
                 .UseSqlServerStorage("hangfire")
                .UseConsole()
                .UseNinjectActivator(kernel)
-               .UseTaskDispatcherPages(Assembly.GetAssembly(typeof(UpdateFaqQuestionIndexTaskParameters)));
+               .UseTaskDispatcherPages(Assembly.GetAssembly(typeof(T2TaskParameters)));
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();

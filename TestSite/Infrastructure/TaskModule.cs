@@ -1,5 +1,4 @@
-﻿using Benoy.Portal.Domain.APIs.Lucene.LuceneIndexUpdating;
-using Hangfire.Extension.TaskDispatcher.Interfaces;
+﻿using Hangfire.Extension.TaskDispatcher.Interfaces;
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using System.Reflection;
@@ -13,7 +12,7 @@ namespace TestSite.Infrastructure
         {
             Bind<ITaskDispatcher>().To<TaskDispatcher>();
 
-            Kernel.Bind(x => x.From(Assembly.GetAssembly(typeof(UpdateFaqQuestionIndexTaskParameters)))
+            Kernel.Bind(x => x.From(Assembly.GetAssembly(typeof(T2TaskParameters)))
                 .SelectAllClasses()
                 .InheritedFrom<ITaskHandler>()
                 .BindAllInterfaces());
