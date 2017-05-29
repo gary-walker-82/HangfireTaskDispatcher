@@ -22,7 +22,5 @@ namespace Hangfire.Extension.TaskDispatcher.Interfaces
 
             handler.Process(taskParameters);
         }
-
-
     }
 }

@@ -2,23 +2,10 @@
 using System;
 using System.ComponentModel;
 using System.Text.RegularExpressions;
+using Hangfire.Extension.TaskDispatcher.Implementations;
 
 namespace Tasks
 {
-    public abstract class BaseTaskParameters : ITaskParameters
-    {
-        public virtual string Queue => "default";
-
-        public override string ToString()
-        {
-            var r = new Regex(@"
-                (?<=[A-Z])(?=[A-Z][a-z]) |
-                 (?<=[^A-Z])(?=[A-Z]) |
-                 (?<=[A-Za-z])(?=[^A-Za-z])", RegexOptions.IgnorePatternWhitespace);
-            return r.Replace(this.GetType().Name.Replace("TaskParameters", ""), " ");
-        }
-    }
-
     public enum Mytype
     {
         option1,
@@ -31,7 +18,10 @@ namespace Tasks
     {
         public override string Queue => "newqueue";
         public string Name { get; set; }
+        [DisplayName("option Set")]
+        [Description("select this if you want something to happen")]
         public bool? Option { get; set; }
+        public bool Option2 { get; set; }
         public DateTime? Date { get; set; }
         public string SomethingElse { get; set; }
         public Mytype myenum { get; set; }
@@ -53,7 +43,7 @@ namespace Tasks
         public int MyNumber { get; set; }
     }
 
-    public class MyGenericType<T> : BaseTaskParameters
+    public class MyGenericType<T> : BaseTaskParameters<T>
     {
         public string somedata { get; set; }
     }

@@ -4,6 +4,7 @@ using Hangfire.Extension.TaskDispatcher.GlobalConfiguration;
 using Ninject;
 using Owin;
 using System.Reflection;
+using Hangfire.Extension.TaskDispatcher.Interfaces;
 using Tasks;
 
 namespace TestSite
@@ -17,9 +18,9 @@ namespace TestSite
             kernel.Load(Assembly.GetAssembly(typeof(Startup)));
             GlobalConfiguration.Configuration
                 .UseSqlServerStorage("hangfire")
-               .UseConsole()
+               .UseConsole()    
                .UseNinjectActivator(kernel)
-               .UseTaskDispatcherPages(Assembly.GetAssembly(typeof(T2TaskParameters)));
+               .UseTaskDispatcherPages(kernel.GetAll<ITaskHandler>());
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();

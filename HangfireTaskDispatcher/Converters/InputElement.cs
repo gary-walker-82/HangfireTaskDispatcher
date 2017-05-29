@@ -1,6 +1,7 @@
 ﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using Hangfire.Extension.TaskDispatcher.Interfaces;
+using System.ComponentModel;
 
 namespace Hangfire.Extension.TaskDispatcher.Converters
 {
@@ -15,13 +16,13 @@ namespace Hangfire.Extension.TaskDispatcher.Converters
 
         public virtual string Id => Property?.Name;
         public virtual string PlaceHolderText => DisplayName;
-        public virtual string HelpText => Property?.Name;
-        public virtual string DisplayName => r.Replace(Id, " ");
+        public virtual string HelpText => Property.GetCustomAttribute<DescriptionAttribute>()?.Description;
+        public virtual string DisplayName => Property.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? r.Replace(Id, " ");
         public virtual bool ReadOnly => !Property.CanWrite;
         protected virtual string ReadOnlyString => ReadOnly ? @"disabled class=""disabled""" : string.Empty;
 
         public PropertyInfo Property { get; set; }
-        
+       
         protected virtual string GetValue(object taskParameters)
         {
             var value = string.Empty;
@@ -34,8 +35,13 @@ namespace Hangfire.Extension.TaskDispatcher.Converters
 
         public virtual string WriteElementAndLabel(object taskParameters)
         {
+            var helpText = string.IsNullOrWhiteSpace(HelpText)
+                ? ""
+                : $@"<i class=""glyphicon glyphicon-info-sign text-primary"" data-toggle=""tooltip"" data-placement=""bottom"" title=""{
+                        HelpText
+                    }""></i>";
             return $@"<div class=""form-group row"">
-                        <label for=""{Id}"" class=""col-xs-3 col-form-label"">{DisplayName}</label>
+                        <label for=""{Id}"" class=""col-xs-3 col-form-label"">{DisplayName} {helpText}</label>
                         <div class=""col-xs-9"">{WriteElement(taskParameters)}</div></div>";
         }
     }

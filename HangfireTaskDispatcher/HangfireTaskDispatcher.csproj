@@ -47,13 +47,15 @@
     <Compile Include="Attributes\UseQueueFromTaskParametersAttribute.cs" />
     <Compile Include="Converters\BoolInputElement.cs" />
     <Compile Include="Converters\EnumInputElement.cs" />
+    <Compile Include="Extensions\AssembleyExtensionMethods.cs" />
     <Compile Include="Extensions\TypeExtensionMethods.cs" />
     <Compile Include="GlobalConfiguration\GlobalConfigurationExtension.cs" />
     <Compile Include="Helpers\EmbeddedResourceDispatcher.cs" />
+    <Compile Include="Implementations\BaseTaskParameters.cs" />
     <Compile Include="Interfaces\ITaskDispatcher.cs" />
     <Compile Include="Interfaces\ITaskHandler.cs" />
     <Compile Include="Interfaces\ITaskParameters.cs" />
-    <Compile Include="Interfaces\TaskDispatcher.cs" />
+    <Compile Include="Implementations\TaskDispatcher.cs" />
     <Compile Include="Pages\ITaskParameterExtentions.cs" />
     <Compile Include="Pages\TaskDetailsRoutes.cs" />
     <Compile Include="Converters\DateTimeInputElement.cs" />
