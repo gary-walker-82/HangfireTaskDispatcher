@@ -2,6 +2,7 @@
 using Ninject.Extensions.Conventions;
 using Ninject.Modules;
 using System.Reflection;
+using Hangfire.Extension.TaskDispatcher.Implementations;
 using Tasks;
 
 namespace TestSite.Infrastructure

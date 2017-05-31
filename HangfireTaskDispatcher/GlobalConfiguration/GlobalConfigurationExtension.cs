@@ -13,30 +13,26 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
 {
     public static class GlobalConfigurationExtension
     {
-        public static IGlobalConfiguration UseTaskDispatcherPages(this IGlobalConfiguration config, Assembly assembly)
+        [Obsolete("You should now use use TaskDispatcherPagesOptions and set the handlers directly")]
+        public static IGlobalConfiguration UseTaskDispatcherPages(this IGlobalConfiguration config,IEnumerable<ITaskHandler> handlers)
         {
-            var handlers =
-                assembly.GetTypes()
-                    .Where(x => x.IsAssignableFrom(typeof(ITaskHandler)) && x.IsAbstract == false)
-                    .Select(Activator.CreateInstance)
-                    .Cast<ITaskHandler>();
-            return config.UseTaskDispatcherPages(handlers);
+            return config.UseTaskDispatcherPages(new TaskDispatcherPagesOptions() {TaskHandlers = handlers});
         }
 
-        public static IGlobalConfiguration UseTaskDispatcherPages(this IGlobalConfiguration config,
-            IEnumerable<ITaskHandler> handlers)
+        public static IGlobalConfiguration UseTaskDispatcherPages(this IGlobalConfiguration config, TaskDispatcherPagesOptions options)
         {
+            options = options ?? new TaskDispatcherPagesOptions();
             CreateTopNavMenuItem();
             CreateScriptRoute();
-            CreateWebViews(handlers);
+            CreateWebViews(options);
 
             return config;
         }
 
-        private static void CreateWebViews(IEnumerable<ITaskHandler> handlers)
+        private static void CreateWebViews(TaskDispatcherPagesOptions options)
         {
             var enumerable =
-                handlers.Select(
+                options.TaskHandlers.Select(
                     x =>
                         x.GetType()
                             .GetInterfaces()
@@ -66,7 +62,7 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
                     TaskDetailsRoutes.AddCommands(task, taskType.Name);
 
                     DashboardRoutes.Routes.AddRazorPage($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}",
-                        x => new TaskDetailsPage(task));
+                        x => new TaskDetailsPage(task,options));
                 }
                 else
                 {
@@ -74,7 +70,7 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
                     var unConstructedGenericType = taskType.Assembly.GetTypes().FirstOrDefault(x => x.Name == taskType.Name);
                     TaskDetailsRoutes.AddCommands(unConstructedGenericType, types.ToList(), taskType.Name.Replace("`1", ""));
                     DashboardRoutes.Routes.AddRazorPage($"{TasksPage.UrlRoute}/{taskType.Name.Replace("`1", "")}",
-                       x => new TaskDetailsPage(task, types.ToList()));
+                       x => new TaskDetailsPage(task,options, types.ToList()));
                 }
             }
         }

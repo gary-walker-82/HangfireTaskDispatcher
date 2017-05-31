@@ -1,12 +1,12 @@
-using Hangfire.Dashboard;
-using Hangfire.Extension.TaskDispatcher.Interfaces;
 using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using Hangfire.Dashboard;
+using Hangfire.Extension.TaskDispatcher.Interfaces;
 
-namespace Hangfire.Extension.TaskDispatcher.Pages
+namespace Hangfire.Extension.TaskDispatcher.Extensions
 {
     public static class ITaskParameterExtentions
     {

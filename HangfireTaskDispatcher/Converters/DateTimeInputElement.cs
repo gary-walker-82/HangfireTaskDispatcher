@@ -9,7 +9,7 @@ namespace Hangfire.Extension.TaskDispatcher.Converters
         {
             return $@"
                      <div class='input-group date' id='{Id}_datetimepicker' >
-                            <input type='text' class=""form-control"" name=""{Id}"" placeholder=""{DisplayName}"" />
+                            <input type='text' class=""form-control"" name=""{Id}"" placeholder=""{DisplayName}"" {ReadOnlyString}/>
                             <span class=""input-group-addon"">
                                 <span class=""glyphicon glyphicon-calendar""></span>
                             </span>

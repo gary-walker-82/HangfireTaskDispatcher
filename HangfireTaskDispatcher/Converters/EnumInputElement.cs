@@ -10,7 +10,7 @@ namespace Hangfire.Extension.TaskDispatcher.Converters
         {
             var values = Enum.GetValues(Property.PropertyType);
             var stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($@"<select class=""form-control"" id=""{Id}"" name=""{Id}"">");
+            stringBuilder.AppendLine($@"<select class=""form-control"" id=""{Id}"" name=""{Id}"" {ReadOnlyString}>");
             foreach (var value in values)
             {
                 stringBuilder.AppendLine($@"<option value=""{value}"">{value}</option>");

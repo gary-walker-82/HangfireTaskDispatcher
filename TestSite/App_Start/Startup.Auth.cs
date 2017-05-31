@@ -18,9 +18,13 @@ namespace TestSite
             kernel.Load(Assembly.GetAssembly(typeof(Startup)));
             GlobalConfiguration.Configuration
                 .UseSqlServerStorage("hangfire")
-               .UseConsole()    
-               .UseNinjectActivator(kernel)
-               .UseTaskDispatcherPages(kernel.GetAll<ITaskHandler>());
+                .UseConsole()    
+                .UseNinjectActivator(kernel)
+                .UseTaskDispatcherPages(new TaskDispatcherPagesOptions()
+                {
+                    TaskHandlers = kernel.GetAll<ITaskHandler>(), ShowQueueName = 
+                        false, ShowReadOnlyProperties = true
+                });
 
             app.UseHangfireDashboard();
             app.UseHangfireServer();

@@ -1,8 +1,9 @@
-﻿using Hangfire.Server;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using Hangfire.Extension.TaskDispatcher.Interfaces;
+using Hangfire.Server;
 
-namespace Hangfire.Extension.TaskDispatcher.Interfaces
+namespace Hangfire.Extension.TaskDispatcher.Implementations
 {
     public class TaskDispatcher : ITaskDispatcher
     {

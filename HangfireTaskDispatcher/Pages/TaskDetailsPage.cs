@@ -2,11 +2,14 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using Hangfire.Dashboard;
 using Hangfire.Dashboard.Pages;
+using Hangfire.Extension.TaskDispatcher.Attributes;
 using Hangfire.Extension.TaskDispatcher.Converters;
 using Hangfire.Extension.TaskDispatcher.Extensions;
+using Hangfire.Extension.TaskDispatcher.GlobalConfiguration;
 using Hangfire.Extension.TaskDispatcher.Interfaces;
 
 namespace Hangfire.Extension.TaskDispatcher.Pages
@@ -19,15 +22,18 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
         private readonly string _displayDescription;
         private readonly ITaskParameters _taskParameters;
         private readonly List<Type> _genericTypeOptions;
+        private readonly TaskDispatcherPagesOptions _options;
 
-        protected internal TaskDetailsPage(ITaskParameters taskParameters,List<Type> genericTypeOptions=null)
+        protected internal TaskDetailsPage(ITaskParameters taskParameters, TaskDispatcherPagesOptions options, List<Type> genericTypeOptions = null)
         {
             _taskParameters = taskParameters;
             _genericTypeOptions = genericTypeOptions;
+            _options = options;
             var type = _taskParameters.GetType();
             _pageHeader = type.Name.Replace("`1", "");
-            _displayName = type.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ??taskParameters.ToString();
+            _displayName = type.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? taskParameters.ToString();
             _displayDescription = type.GetCustomAttribute<DescriptionAttribute>()?.Description;
+
         }
 
         public override void Execute()
@@ -63,10 +69,10 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
             var inputsHtml = AddGenericTypeOption();
             inputsHtml += _taskParameters.GetType()
                                            .GetProperties()
-                                           .Where(x => x.CanRead)
+                                           .Where(ShouldDisplayProperty)
                                            .Select(x => inputElementFactory.GetInputElementWriter(x))
                                            .Aggregate(new StringBuilder(), (sb, x) => sb.AppendLine(x.WriteElementAndLabel(_taskParameters)), sb => sb.ToString());
-            
+
             var route = $"{TasksPage.UrlRoute}/{_taskParameters.Queue}/{_pageHeader.Replace(" ", string.Empty)}";
 
             Panel(id, _displayName, _displayDescription, inputsHtml, CreateButtons(route, "Enqueue", "enqueueing", id));
@@ -74,6 +80,16 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
             WriteLiteral("\r\n<script src=\"");
             Write(Url.To($"/jsm"));
             WriteLiteral("\"></script>\r\n");
+        }
+
+        private bool ShouldDisplayProperty(PropertyInfo propertyInfo)
+        {
+            if (propertyInfo.GetCustomAttribute<TaskFormIgnoreAttribute>() != null) return false;
+            if (propertyInfo.Name == "Queue") return _options.ShowQueueName;
+            if (propertyInfo.CanWrite && propertyInfo.CanRead) return true;   
+            if (_options.ShowReadOnlyProperties && propertyInfo.CanRead) return true;
+
+            return false;
         }
 
         private string AddGenericTypeOption()
@@ -87,7 +103,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                 stringBuilder.AppendLine($@"<option value=""{value}"">{value}</option>");
             }
             stringBuilder.AppendLine("</select>");
-          
+
             var inputsHtml = $@"<div class=""form-group row"">
                         <label for=""objecttype"" class=""col-xs-3 col-form-label"">Type</label>
                         <div class=""col-xs-9"">{  stringBuilder}</div></div>";
