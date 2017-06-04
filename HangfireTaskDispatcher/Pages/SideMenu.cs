@@ -5,28 +5,25 @@ using System.Linq;
 
 namespace Hangfire.Extension.TaskDispatcher.Pages
 {
-    internal class SideMenu : RazorPage
-    {
+    public class SideMenu : RazorPage
+    {    
         public const string Title = "Tasks";
         public const string UrlRoute = "/Task";
 
-        public IDictionary<string, SortedList<string, Func<RazorPage, MenuItem>>> Items { get; }
-
-        public SideMenu(IDictionary<string, SortedList<string, Func<RazorPage, MenuItem>>> items)
+        public SideMenu()
         {
-            if (items == null) throw new ArgumentNullException(nameof(items));
-            Items = items;
         }
 
         public override void Execute()
         {
+            
             WriteLiteral("\r\n");
-
-            if (!Items.Any()) return;
+            var menu = TasksMenu.CreateMenu();
+            if (!menu.Any()) return;
 
             WriteLiteral(@"<div id=""menu"">
                                 <div id=""stats"" class=""panel list-group"">");
-            foreach (var queue in Items)
+            foreach (var queue in menu)
             {
                 WriteLiteral($@"<a class=""list-group-item"" data-toggle=""collapse"" data-target=""#{queue.Key}"" data-parent=""#menu""><b>{queue.Key.Replace("_", " ")}</b></a>
                                     <div id=""{queue.Key}"" class=""sublinks collapse"">");

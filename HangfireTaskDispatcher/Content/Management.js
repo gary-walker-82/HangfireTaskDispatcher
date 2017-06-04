@@ -17,7 +17,6 @@
                    function (e) {
                        var $this = $(this);
                        var confirmText = $this.data('confirm');
-                       console.log($this);
                        var id = $this.attr("input-id");
                        var action = $this.attr("action");
                        if (!confirmText || confirm(confirmText)) {
@@ -30,11 +29,11 @@
                            if (action === "schedule") {
                                send += "&schedule="+ $this.attr("schedule");
                            }
-                           $.post($this.data('url'), send, function () {
+                           $.post($this.data('url'), send, function (data) {
                                clearTimeout(loadingDelay);
-                               window.location.reload();
+                               Hangfire.Management.alertSuccess(id, "A Task has been created. <a href=\""+data+"\">View Job</a>");
                            }).fail(function (xhr, status, error) {
-                               Hangfire.Management.alert(id, "There was an error. " + error);
+                               Hangfire.Management.alertError(id, "There was an error. " + error);
                            });
                        }
 
@@ -43,12 +42,20 @@
             });
         };
 
-        Management.alert = function (id, message) {
+        Management.alertError = function(id, message) {
             $('#' + id + '_error')
-                .html('<div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a><strong>Error! </strong><span>' +
+                .html(
+                    '<div class="alert alert-danger"><a class="close" data-dismiss="alert">×</a><strong>Error! </strong><span>' +
                     message +
                     '</span></div>');
-        }
+        };
+        Management.alertSuccess = function(id, message) {
+            $('#' + id + '_success')
+                .html(
+                    '<div class="alert alert-success"><a class="close" data-dismiss="alert">×</a><strong>Task Created! </strong><span>' +
+                    message +
+                    '</span></div>');
+        };
 
         return Management;
 

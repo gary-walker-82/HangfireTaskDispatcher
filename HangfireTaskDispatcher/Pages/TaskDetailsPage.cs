@@ -45,7 +45,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
             WriteLiteral("<div class=\"row\">\r\n");
             WriteLiteral("<div class=\"col-md-3\">\r\n");
 
-            Write(Html.RenderPartial(new SideMenu(TasksMenu.Items)));
+            Write(Html.RenderPartial(new SideMenu()));
 
             WriteLiteral("</div>\r\n");
             WriteLiteral("<div class=\"col-md-9\">\r\n");
@@ -125,7 +125,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                               ");
             }
 
-            WriteLiteral($@"<div id=""{id}_error"" ></div>  
+            WriteLiteral($@"<div id=""{id}_success"" ></div><div id=""{id}_error"" ></div>  
                             
                             <div class=""panel-footer clearfix "">
                                 <div class=""pull-right"">
@@ -133,6 +133,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                                 </div>
                               </div>
                             </form>");
+           
         }
 
         protected string CreateButtons(string url, string text, string loadingText, string id)

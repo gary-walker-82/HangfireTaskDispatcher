@@ -16,7 +16,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
             WriteLiteral("<div class=\"row\">\r\n");    
             WriteLiteral("<div class=\"col-md-3\">\r\n");
 
-            Write(Html.RenderPartial(new SideMenu(TasksMenu.Items)));
+            Write(Html.RenderPartial(new SideMenu()));
 
             WriteLiteral("</div>\r\n");
             WriteLiteral("<div class=\"col-md-9\">\r\n");

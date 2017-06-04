@@ -13,12 +13,10 @@ namespace Hangfire.Extension.TaskDispatcher.Helpers
 
         public EmbeddedResourceDispatcher(Assembly assembly, string resourceName, string contentType = null)
         {
-            if (assembly == null)
-                throw new ArgumentNullException(nameof(assembly));
             if (string.IsNullOrEmpty(resourceName))
                 throw new ArgumentNullException(nameof(resourceName));
 
-            this.assembly = assembly;
+            this.assembly = assembly ?? throw new ArgumentNullException(nameof(assembly));
             this.resourceName = resourceName;
             this.contentType = contentType;
         }

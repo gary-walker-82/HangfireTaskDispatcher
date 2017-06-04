@@ -1,11 +1,14 @@
+using System.Collections.Generic;
 using Hangfire;
 using Hangfire.Console;
 using Hangfire.Extension.TaskDispatcher.GlobalConfiguration;
 using Ninject;
 using Owin;
 using System.Reflection;
+using Hangfire.Dashboard;
 using Hangfire.Extension.TaskDispatcher.Interfaces;
 using Tasks;
+using TestSite.Filters;
 
 namespace TestSite
 {
@@ -22,11 +25,23 @@ namespace TestSite
                 .UseNinjectActivator(kernel)
                 .UseTaskDispatcherPages(new TaskDispatcherPagesOptions()
                 {
-                    TaskHandlers = kernel.GetAll<ITaskHandler>(), ShowQueueName = 
-                        false, ShowReadOnlyProperties = true
+                    TaskHandlers = kernel.GetAll<ITaskHandler>(),
+                    AuthorizationFilters = new List<ITaskAuthorizationFilter>
+                    {
+                        new TaskAuthorizationFilter()
+                    },
+                    ShowQueueName = false,
+                    ShowReadOnlyProperties = true
                 });
 
-            app.UseHangfireDashboard();
+            var dashboardOptions = new DashboardOptions
+            {
+                Authorization = new List<IDashboardAuthorizationFilter>
+                {
+                    new AuthTaskDashboardAuthorizationFilter()
+                }
+            };
+            app.UseHangfireDashboard("/hangfire", dashboardOptions);
             app.UseHangfireServer();
         }
     }

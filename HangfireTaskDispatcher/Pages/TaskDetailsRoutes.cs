@@ -5,8 +5,10 @@ using Hangfire.States;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Hangfire.Extension.TaskDispatcher.Extensions;
+using Hangfire.Extension.TaskDispatcher.Helpers;
 
 namespace Hangfire.Extension.TaskDispatcher.Pages
 {
@@ -16,7 +18,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
         {
             var queue = task.Queue;
             var route = $"{TasksPage.UrlRoute}/{queue}/{pageHeader.Replace(" ", string.Empty)}";
-            DashboardRoutes.Routes.AddCommand(route, context =>
+            DashboardRoutes.Routes.Add(route, new CommandWithResponseDispatcher(context =>
             {
                 var schedule = Task.Run(() => context.Request.GetFormValuesAsync("schedule")).Result.FirstOrDefault();
                 var cron = Task.Run(() => context.Request.GetFormValuesAsync("cron")).Result.FirstOrDefault();
@@ -28,12 +30,14 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                 var makeGenericMethod = methodInfo.MakeGenericMethod(task.GetType());
                 var job = new Job(typeof(ITaskDispatcher), makeGenericMethod, task, null, null);
                 var client = new BackgroundJobClient(context.Storage);
-
+                string JobId = "";
+                
                 switch (action)
                 {
                     case "schedule":
                         var minutes = int.Parse(schedule);
-                        return client.Create(job, new ScheduledState(new TimeSpan(0, 0, minutes, 0))) != string.Empty;
+                        JobId = client.Create(job, new ScheduledState(new TimeSpan(0, 0, minutes, 0)));
+                        break;
                     case "cron":
                         var manager = new RecurringJobManager(context.Storage);
                         try
@@ -44,11 +48,15 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
                         {
                             return false;
                         }
-                        return true;
+                        break;
                     default:
-                        return client.Create(job, new EnqueuedState(queue)) != string.Empty;
+                        JobId = client.Create(job, new EnqueuedState(queue));
+                        break;
                 }
-            });
+                context.Response.WriteAsync(new UrlHelper(context).JobDetails(JobId));
+                return true;
+
+            }));
         }
 
         public static void AddCommands(Type unconstructedType, List<Type> genericTypeOptions, string pageHeader)

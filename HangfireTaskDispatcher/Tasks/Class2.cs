@@ -7,6 +7,18 @@ using Hangfire.Extension.TaskDispatcher.Implementations;
 
 namespace Tasks
 {
+    [Flags]
+    public enum AuthRoles
+    {
+        Dev = 1<<0,
+        HelpDesk = 1<<1 
+    }
+
+    public interface ITaskAuth
+    {
+        AuthRoles AuthRoles { get; }
+    }
+
     public enum Mytype
     {
         option1,
@@ -15,7 +27,7 @@ namespace Tasks
 
     [DisplayName("Task Two")]
     [Description("This is a description")]
-    public class T2TaskParameters : BaseTaskParameters
+    public class T2TaskParameters : BaseTaskParameters , ITaskAuth
     {
         public override string Queue => "newqueue";
         public string Name => "MyName";
@@ -34,23 +46,28 @@ namespace Tasks
         public Guid? GuidId { get; set; }
         public decimal? DecimalValue { get; set; }
         public double? DoubleValue { get; set; }
+        public AuthRoles AuthRoles => AuthRoles.Dev| AuthRoles.HelpDesk;
     }
 
-    public class TestTaskParameters : BaseTaskParameters
+    public class TestTaskParameters : BaseTaskParameters, ITaskAuth
     {
         public string MyName { get; set; }
+        public AuthRoles AuthRoles => AuthRoles.Dev;
     }
 
     [DisplayName("second task")]
     [Description("this is some details on the description")]
-    public class Test1TaskParameters : BaseTaskParameters
+    public class Test1TaskParameters : BaseTaskParameters , ITaskAuth
     {
         public int MyNumber { get; set; }
+        public AuthRoles AuthRoles => AuthRoles.HelpDesk;
     }
 
-    public class MyGenericType<T> : BaseTaskParameters<T>
+    public class MyGenericType<T> : BaseTaskParameters<T>, ITaskAuth
     {
         public string Somedata { get; set; }
+        public AuthRoles AuthRoles => AuthRoles.Dev | AuthRoles.HelpDesk;
+
     }
 
 

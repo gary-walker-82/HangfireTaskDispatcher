@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Hangfire.Dashboard;
 using Hangfire.Extension.TaskDispatcher.Interfaces;
 
 namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
@@ -8,7 +9,7 @@ namespace Hangfire.Extension.TaskDispatcher.GlobalConfiguration
     public class TaskDispatcherPagesOptions
     {
         public IEnumerable<ITaskHandler> TaskHandlers { get; set; }
-
+        public IEnumerable<ITaskAuthorizationFilter> AuthorizationFilters { get; set; }
         public bool ShowQueueName { get; set; } = true;
         public bool ShowReadOnlyProperties { get; set; } = false;
 
