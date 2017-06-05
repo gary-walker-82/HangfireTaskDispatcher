@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Gary Walker</authors>
+    <owners>Gary Walker</owners>
+    <projectUrl>https://github.com/gary-walker-82/HangfireTaskDispatcher</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2017</copyright>
+    <tags>Hangfire TasksDispatcher</tags>
+  </metadata>
+</package>
