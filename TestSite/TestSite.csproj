@@ -263,6 +263,12 @@
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
+    <EmbeddedResource Include="jobDescriptions.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="jobDescriptions2.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
     <None Include="Scripts\jquery-3.1.1.intellisense.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -300,6 +306,10 @@
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HangfireRecurringJobs\Hangfire.Extension.RecurringJobs.csproj">
+      <Project>{56b92377-9681-4a5b-8971-97324b5274ea}</Project>
+      <Name>Hangfire.Extension.RecurringJobs</Name>
+    </ProjectReference>
     <ProjectReference Include="..\HangfireTaskDispatcher\HangfireTaskDispatcher.csproj">
       <Project>{43d6e0a3-b847-4d05-b207-aa18c38700b0}</Project>
       <Name>HangfireTaskDispatcher</Name>

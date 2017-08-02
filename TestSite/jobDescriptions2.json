@@ -1,0 +1,26 @@
+﻿[
+  {
+    "name": "My Job221",
+    "type": "Tasks.TestTaskParameters, Tasks",
+    "cron": "*/5 * * * *",
+    "data": {
+      "MyName": "steve"
+    }
+  }, 
+  {
+    "name": "new Job1",
+    "type": "Tasks.T2TaskParameters, Tasks",
+    "cron": "* * * * *",
+    "data": {
+      "Option2": false,
+      "Option3": true,
+      "Date": "2017-01-05",
+      "SomethingElse": "some text",
+      "Myenum": 1,
+      "LongNumber": 1234567898542,
+      "GuidId": "1701ef38-5cb4-4472-9e4e-a6c3ae233b45",
+      "DecimalValue": 12.45678,
+      "DoubleValue": 0.001234
+    }
+  }
+]
