@@ -2,5 +2,5 @@
 
 namespace Hangfire.Extension.TaskDispatcher.Attributes
 {
-    public class TaskFormIgnoreAttribute : Attribute { }
+	public class TaskFormIgnoreAttribute : Attribute { }
 }

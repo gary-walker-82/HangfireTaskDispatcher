@@ -26,6 +26,7 @@ namespace Tasks
 
 	[DisplayName("Task Two")]
 	[Description("This is a description")]
+	[ErrorImplicationDetails("this is what can happen when things go wrong")]
 	public class T2TaskParameters : BaseTaskParameters, ITaskAuth
 	{
 		//		public override string Queue => "newqueue";

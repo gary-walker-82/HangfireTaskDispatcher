@@ -20,6 +20,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
         private readonly string _pageHeader;
         private readonly string _displayName;
         private readonly string _displayDescription;
+        private readonly string _displayErrorDetails;
         private readonly ITaskParameters _taskParameters;
         private readonly List<Type> _genericTypeOptions;
         private readonly TaskDispatcherPagesOptions _options;
@@ -33,7 +34,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
             _pageHeader = type.Name.Replace("`1", "");
             _displayName = type.GetCustomAttribute<DisplayNameAttribute>()?.DisplayName ?? taskParameters.ToString();
             _displayDescription = type.GetCustomAttribute<DescriptionAttribute>()?.Description;
-
+	        _displayErrorDetails = type.GetCustomAttribute<ErrorImplicationDetailsAttribute>()?.Details;
         }
 
         public override void Execute()
@@ -75,7 +76,7 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
 
             var route = $"{TasksPage.UrlRoute}/{_taskParameters.Queue}/{_pageHeader.Replace(" ", string.Empty)}";
 
-            Panel(id, _displayName, _displayDescription, inputsHtml, CreateButtons(route, "Enqueue", "enqueueing", id));
+            Panel(id, _displayName, _displayDescription, _displayErrorDetails,inputsHtml, CreateButtons(route, "Enqueue", "enqueueing", id));
 
             WriteLiteral("\r\n<script src=\"");
             Write(Url.To($"/jsm"));
@@ -110,11 +111,16 @@ namespace Hangfire.Extension.TaskDispatcher.Pages
             return inputsHtml;
         }
 
-        protected void Panel(string id, string heading, string description, string content, string buttons)
+        protected void Panel(string id, string heading, string description,string errorDetails, string content, string buttons)
         {
-            WriteLiteral($@"<div class=""js-management"">
-                              <p>{description}</p><br/><br/>
-                               <form id =""{id}"">");
+            WriteLiteral($@"<div class=""js-management"">                             ");
+	        if (!string.IsNullOrWhiteSpace(description))
+		        WriteLiteral($@"<div class=""alert alert-info""><p>{description}</p></div>");
+
+			if (!string.IsNullOrWhiteSpace(errorDetails))
+				WriteLiteral($@"<div class=""alert alert-danger""><h4>Error Implications:</h4><p>{errorDetails}</p></div>");
+
+			WriteLiteral($@"<form id =""{id}"">");
 
             if (!string.IsNullOrEmpty(content))
             {
