@@ -79,7 +79,7 @@ function loadManagement() {
                 $("div[id$='_datetimepicker']").each(function () {
                     $(this)
                         .datetimepicker({
-                            format: "Do MMMM YYYY, h:mm:ss a"
+                            format: "DD MMMM YYYY, h:mm:ss a"
                         });
                 });
 
