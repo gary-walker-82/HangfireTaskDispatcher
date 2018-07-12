@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tasks", "Tasks\Tasks.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hangfire.Extension.RecurringJobs", "..\HangfireRecurringJobs\Hangfire.Extension.RecurringJobs.csproj", "{56B92377-9681-4A5B-8971-97324B5274EA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Subscripotions", "Subscripotions\Subscripotions.csproj", "{A235DE33-18CD-409C-86DD-43879BC0BC3C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,8 +35,15 @@ Global
 		{56B92377-9681-4A5B-8971-97324B5274EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{56B92377-9681-4A5B-8971-97324B5274EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56B92377-9681-4A5B-8971-97324B5274EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A235DE33-18CD-409C-86DD-43879BC0BC3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A235DE33-18CD-409C-86DD-43879BC0BC3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A235DE33-18CD-409C-86DD-43879BC0BC3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A235DE33-18CD-409C-86DD-43879BC0BC3C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {54DDC2A1-2A73-4189-B047-69C33B019050}
 	EndGlobalSection
 EndGlobal

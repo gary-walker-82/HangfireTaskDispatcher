@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using WebGrease.Css.Extensions;
 
 namespace Hangfire.Extension.RecurringJobs.GlobalConfiguration
 {
@@ -13,7 +14,7 @@ namespace Hangfire.Extension.RecurringJobs.GlobalConfiguration
 	{
 		private static List<Type> _toList;
 
-		public static IGlobalConfiguration UseRecurringJobBuilder(this IGlobalConfiguration config, RecurringJobBuilderOptions builderOptions)
+        public static IGlobalConfiguration UseRecurringJobBuilder(this IGlobalConfiguration config, JobBuilderOptions builderOptions)
 		{
 			if (builderOptions.JsonFileLocations.Any(string.IsNullOrWhiteSpace)) throw new ArgumentException("JsonFileLocation must have a value");
 			CreateRecurringJobs(builderOptions);
@@ -21,14 +22,30 @@ namespace Hangfire.Extension.RecurringJobs.GlobalConfiguration
 			return config;
 		}
 
-		private static void CreateRecurringJobs(RecurringJobBuilderOptions builderOptions)
+	    public static IGlobalConfiguration UseStartUpJobBuilder(this IGlobalConfiguration config, JobBuilderOptions builderOptions)
+	    {
+	        if (builderOptions.JsonFileLocations.Any(string.IsNullOrWhiteSpace)) throw new ArgumentException("JsonFileLocation must have a value");
+	        CreateStartUpJobs(builderOptions);
+
+	        return config;
+	    }
+
+		private static void CreateStartUpJobs(JobBuilderOptions builderOptions)
 		{
-			var jobManager = new RecurringJobManager(JobStorage.Current);
+			var jobManager = new BackgroundJobClient(JobStorage.Current);
 			builderOptions.JsonFileLocations.Select(GetFileContents)
 							.SelectMany(JsonConvert.DeserializeObject<List<JobInfo>>)
-							.ToList()
-							.ForEach(x => AddOrUpdateRecurringJob(x, jobManager));
+							.ForEach(x=>CreateStartUpJob(x,jobManager));
 		}
+
+	    private static void CreateRecurringJobs(JobBuilderOptions builderOptions)
+	    {
+	        var jobManager = new RecurringJobManager(JobStorage.Current);
+	        builderOptions.JsonFileLocations.Select(GetFileContents)
+	            .SelectMany(JsonConvert.DeserializeObject<List<RecurringJobInfo>>)
+	            .ToList()
+	            .ForEach(x => AddOrUpdateRecurringJob(x, jobManager));
+	    }
 
 		private static string GetFileContents(string fileName)
 		{
@@ -36,13 +53,20 @@ namespace Hangfire.Extension.RecurringJobs.GlobalConfiguration
 			return File.ReadAllText(fullFileName);
 		}
 
-		public static void AddOrUpdateRecurringJob(JobInfo jobInfo, IRecurringJobManager jobManager)
+		public static void AddOrUpdateRecurringJob(RecurringJobInfo jobInfo, IRecurringJobManager jobManager)
 		{
 			var taskType = Type.GetType(jobInfo.Type, AssemblyResolver, null);
 			var taskParameters = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(jobInfo.Paramters), taskType) as ITaskParameters;
 
 			jobManager.AddOrUpdate(jobInfo.Name, CreateJob(taskParameters), jobInfo.Cron, TimeZoneInfo.Utc, jobInfo.Queue ?? EnqueuedState.DefaultQueue);
 		}
+
+	    private static void CreateStartUpJob(JobInfo jobInfo,IBackgroundJobClient client)
+	    {
+	        var taskType = Type.GetType(jobInfo.Type, AssemblyResolver, null);
+	        var taskParameters = JsonConvert.DeserializeObject(JsonConvert.SerializeObject(jobInfo.Paramters), taskType) as ITaskParameters;
+            client.Create(CreateJob(taskParameters),new EnqueuedState(taskParameters.Queue));
+	    }
 
 		private static Job CreateJob(ITaskParameters taskParameters)
 		{

@@ -1,3 +1,4 @@
+using System;
 using Hangfire;
 using Hangfire.Console;
 using Hangfire.Dashboard;
@@ -8,6 +9,9 @@ using Ninject;
 using Owin;
 using System.Collections.Generic;
 using System.Reflection;
+using BLS.EmailSubscriptions.HangfireExtension.Data;
+using BLS.EmailSubscriptions.HangfireExtension.GlobalConfiguration;
+using Castle.Components.DictionaryAdapter;
 using TestSite.Filters;
 
 namespace TestSite
@@ -18,10 +22,12 @@ namespace TestSite
 		{
 			var kernel = new StandardKernel();
 			kernel.Load(Assembly.GetAssembly(typeof(Startup)));
-			GlobalConfiguration.Configuration
+            
+          	GlobalConfiguration.Configuration
 				.UseSqlServerStorage("hangfire")
 				.UseConsole()
 				.UseNinjectActivator(kernel)
+			    .UseEmailSubscriptionUi()
 				.UseTaskDispatcherPages(new TaskDispatcherPagesOptions()
 				{
 					TaskHandlers = kernel.GetAll<ITaskHandler>(),
@@ -32,8 +38,9 @@ namespace TestSite
 					ShowQueueName = false,
 					ShowReadOnlyProperties = true
 				})
-				.UseRecurringJobBuilder(new RecurringJobBuilderOptions(new List<string> { "jobDescriptions.Json", "jobDescriptions2.Json" }));
-
+				.UseRecurringJobBuilder(new JobBuilderOptions(new List<string> { "jobDescriptions.Json", "jobDescriptions2.Json" }))
+	            .UseStartUpJobBuilder(new JobBuilderOptions(new List<string> { "startUpJobDescriptions.Json" }));
+		    
 			var dashboardOptions = new DashboardOptions
 			{
 				Authorization = new List<IDashboardAuthorizationFilter>

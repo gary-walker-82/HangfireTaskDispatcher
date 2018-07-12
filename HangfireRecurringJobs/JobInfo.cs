@@ -9,15 +9,18 @@ namespace Hangfire.Extension.RecurringJobs
 
 		[JsonProperty("type")]
 		public string Type { get; set; }
-
-		[JsonProperty("cron")]
-		public string Cron { get; set; }
-
-		[JsonProperty("queue")]
+        
+	    [JsonProperty("queue")]
 		public string Queue { get; set; }
 
 		[JsonProperty("data")]
 		public object Paramters { get; set; }
-
 	}
+
+    public class RecurringJobInfo : JobInfo
+    {
+        [JsonProperty("cron")]
+        public string Cron { get; set; }
+
+    }
 }
